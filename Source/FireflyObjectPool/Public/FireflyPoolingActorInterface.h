@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+#include "UObject/Interface.h"
 #include "FireflyPoolingActorInterface.generated.h"
 
-// This class does not need to be modified.
+
 UINTERFACE(MinimalAPI, BlueprintType)
 class UFireflyPoolingActorInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-/** Interface that actors spawned from actor pool should implement */
 /** Actor池生成的Actor需要实现的接口 */
+/** Interface that actors spawned from actor pool should implement */
 class FIREFLYOBJECTPOOL_API IFireflyPoolingActorInterface
 {
 	GENERATED_BODY()

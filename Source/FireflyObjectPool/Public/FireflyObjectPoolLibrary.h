@@ -6,8 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "FireflyObjectPoolLibrary.generated.h"
 
-/** Universal function API for object pool */
 /** 用于对象池的通用函数API */
+/** Universal function API for object pool */
 UCLASS()
 class FIREFLYOBJECTPOOL_API UFireflyObjectPoolLibrary : public UBlueprintFunctionLibrary
 {

@@ -7,8 +7,8 @@
 #include "FireflyPoolingActorInterface.h"
 #include "FireflyObjectPoolWorldSubsystem.generated.h"
 
-/** World based object pool subsystem */
 /** 基于世界的对象池子系统 */
+/** World based object pool subsystem */
 UCLASS()
 class FIREFLYOBJECTPOOL_API UFireflyObjectPoolWorldSubsystem : public UWorldSubsystem
 {
