@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "FireflyObjectPoolLibrary.generated.h"
 
+/** Universal function API for object pool */
 /** 用于对象池的通用函数API */
 UCLASS()
 class FIREFLYOBJECTPOOL_API UFireflyObjectPoolLibrary : public UBlueprintFunctionLibrary

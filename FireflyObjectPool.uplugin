@@ -3,22 +3,23 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "FireflyObjectPool",
-	"Description": "Personal object spawning pool for gameplay development",
-	"Category": "Other",
-	"CreatedBy": "Firefly",
-	"CreatedByURL": "",
+	"Description": "Object spawning pool for gameplay development",
+	"Category": "Gameplay",
+	"CreatedBy": "Firefly Games",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
+	"EngineVersion": "5.1.0",
 	"CanContainContent": true,
-	"IsBetaVersion": false,
-	"IsExperimentalVersion": false,
-	"Installed": false,
+	"Installed": true,
 	"Modules": [
 		{
 			"Name": "FireflyObjectPool",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64"
+			]
 		}
 	],
 	"Plugins": [

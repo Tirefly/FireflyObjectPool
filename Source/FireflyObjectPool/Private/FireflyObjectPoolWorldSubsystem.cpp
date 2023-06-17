@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 #include "FireflyObjectPoolWorldSubsystem.h"
 
 
 TMap<TSubclassOf<AActor>, UFireflyObjectPoolWorldSubsystem::TActorPoolList> UFireflyObjectPoolWorldSubsystem::ActorPoolOfClass;
 TMap<FName, UFireflyObjectPoolWorldSubsystem::TActorPoolList> UFireflyObjectPoolWorldSubsystem::ActorPoolOfID;
+
 
 void UFireflyObjectPoolWorldSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {

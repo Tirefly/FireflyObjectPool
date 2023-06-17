@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "FireflyPoolingActorInterface.h"
 #include "FireflyObjectPoolWorldSubsystem.generated.h"
 
+/** World based object pool subsystem */
 /** 基于世界的对象池子系统 */
 UCLASS()
 class FIREFLYOBJECTPOOL_API UFireflyObjectPoolWorldSubsystem : public UWorldSubsystem

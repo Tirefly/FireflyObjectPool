@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -13,7 +13,8 @@ class UFireflyPoolingActorInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/** Actor池生成的Actor需要继承的接口 */
+/** Interface that actors spawned from actor pool should implement */
+/** Actor池生成的Actor需要实现的接口 */
 class FIREFLYOBJECTPOOL_API IFireflyPoolingActorInterface
 {
 	GENERATED_BODY()

@@ -1,6 +1,6 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
-#include "FireflyObjectPool.h"
+#include "FireflyObjectPoolModule.h"
 
 #define LOCTEXT_NAMESPACE "FFireflyObjectPoolModule"
 

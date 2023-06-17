@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 #include "FireflyObjectPoolLibrary.h"
 

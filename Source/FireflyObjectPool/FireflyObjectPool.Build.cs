@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Firefly Games, 2023. All Rights Reserved.
 
 using UnrealBuildTool;
 
