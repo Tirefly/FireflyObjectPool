@@ -19,18 +19,28 @@ public:
 
 	// Actor通用的从对象池中取出后进行初始化的操作。
 	// Common operation for an Actor to initialize after being taken out from the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalBeginPlay_Actor(AActor* Actor);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalBeginPlay_Actor(const UObject* WorldContextObject, AActor* Actor);
 
 	// Actor通用的回到对象池后进入冻结状态的操作。
 	// Common operation for an Actor to enter a frozen state after returning to the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalEndPlay_Actor(AActor* Actor);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalEndPlay_Actor(const UObject* WorldContextObject, AActor* Actor);
 
 	// Actor通用的在对象池中生成后进入待命状态的操作。
 	// Common operation for an Actor to enter a standby state after being generated in the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalWarmUp_Actor(AActor* Actor);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalWarmUp_Actor(const UObject* WorldContextObject, AActor* Actor);
+
+#pragma endregion
+
+
+#pragma region Projectile_Universal_Pool_Operation
+
+	// 拥有ProjectileMovementComponent的Actor通用的从对象池中取出后进行初始化的操作。
+	// Common operation for an Actor owning ProjectileMovementComponent to initialize after being taken out from the object pool.
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalBeginPlay_Projectile(const UObject* WorldContextObject, AActor* Projectile);
 
 #pragma endregion
 
@@ -39,18 +49,18 @@ public:
 
 	// Pawn通用的从对象池中取出后进行初始化的操作。
 	// Common operation for an Pawn to initialize after being taken out from the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalBeginPlay_Pawn(APawn* Pawn);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalBeginPlay_Pawn(const UObject* WorldContextObject, APawn* Pawn);
 
 	// Pawn通用的回到对象池后进入冻结状态的操作。
 	// Common operation for an Pawn to enter a frozen state after returning to the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalEndPlay_Pawn(APawn* Pawn);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalEndPlay_Pawn(const UObject* WorldContextObject, APawn* Pawn);
 
 	// Pawn通用的在对象池中生成后进入待命状态的操作。
 	// Common operation for an Pawn to enter a standby state after being generated in the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalWarmUp_Pawn(APawn* Pawn);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalWarmUp_Pawn(const UObject* WorldContextObject, APawn* Pawn);
 
 #pragma endregion
 
@@ -59,18 +69,18 @@ public:
 
 	// Character通用的从对象池中取出后进行初始化的操作。
 	// Common operation for an Character to initialize after being taken out from the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalBeginPlay_Character(ACharacter* Character);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalBeginPlay_Character(const UObject* WorldContextObject, ACharacter* Character);
 
 	// Character通用的回到对象池后进入冻结状态的操作。
 	// Common operation for an Character to enter a frozen state after returning to the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalEndPlay_Character(ACharacter* Character);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalEndPlay_Character(const UObject* WorldContextObject, ACharacter* Character);
 
 	// Character通用的在对象池中生成后进入待命状态的操作。
 	// Common operation for an Character to enter a standby state after being generated in the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool")
-	void UniversalWarmUp_Character(ACharacter* Character);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
+	static void UniversalWarmUp_Character(const UObject* WorldContextObject, ACharacter* Character);
 
 #pragma endregion
 };

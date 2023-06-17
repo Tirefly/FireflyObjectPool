@@ -241,6 +241,22 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUpActorByID(const UObject* 
 	}
 }
 
+TArray<TSubclassOf<AActor>> UFireflyObjectPoolWorldSubsystem::ActorPool_DebugActorClasses()
+{
+	TArray<TSubclassOf<AActor>> ActorClasses;
+	ActorPoolOfClass.GetKeys(ActorClasses);
+
+	return ActorClasses;
+}
+
+TArray<FName> UFireflyObjectPoolWorldSubsystem::ActorPool_DebugActorIDs()
+{
+	TArray<FName> ActorIDs;
+	ActorPoolOfID.GetKeys(ActorIDs);
+
+	return ActorIDs;
+}
+
 int32 UFireflyObjectPoolWorldSubsystem::ActorPool_DebugActorNumberOfClass(TSubclassOf<AActor> ActorClass)
 {
 	if (!ActorPoolOfClass.Contains(ActorClass))

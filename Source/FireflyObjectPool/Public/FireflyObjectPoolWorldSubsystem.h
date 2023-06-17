@@ -90,7 +90,7 @@ public:
 
 	// 从Actor池里生成一个Actor，或者根据ID，或者根据Actor类。并且会在给定时间后，将该Actor回收到Actor池中。
 	// Spawn an Actor from the Actor pool, either based on ID or based on Actor class. Additionally, the Actor will be recycled back into the Actor pool after a given time.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Spawn Actor"
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Spawn Actor With Lifetime"
 		, WorldContext = "WorldContextObject", DeterminesOutputType = "ActorClass", AdvancedDisplay = "6"))
 	static AActor* K2_ActorPool_SpawnActorWithLifetime(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID
 		, const FTransform& Transform, float Lifetime, AActor* Owner = nullptr, APawn* Instigator = nullptr
@@ -134,6 +134,16 @@ public:
 #pragma region ActorPool_Debug
 
 public:
+	// 返回在Actor类对象池中所有的Actor类型。
+	// Return all Actor classes of ActorPoolOfClass.
+	UFUNCTION(BlueprintPure, Category = "FireflyObjectPool")
+	static TArray<TSubclassOf<AActor>> ActorPool_DebugActorClasses();
+
+	// 返回在ActorID对象池中所有的ActorID。
+	// Return all Actor IDs of ActorPoolOfID.
+	UFUNCTION(BlueprintPure, Category = "FireflyObjectPool")
+	static TArray<FName> ActorPool_DebugActorIDs();
+
 	// 返回在对象池中待命的指定类的Actor的数量，如果不存在指定类的Actor的对象池，则返回-1。
 	// Return the number of Actors of a specified class on standby in the object pool. If the object pool for the specified class of Actors does not exist, return -1.
 	UFUNCTION(BlueprintPure, Category = "FireflyObjectPool")

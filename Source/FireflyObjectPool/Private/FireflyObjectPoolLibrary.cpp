@@ -5,23 +5,61 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 #include "NiagaraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
-void UFireflyObjectPoolLibrary::UniversalBeginPlay_Actor(AActor* Actor)
+void UFireflyObjectPoolLibrary::UniversalBeginPlay_Actor(const UObject* WorldContextObject, AActor* Actor)
 {
 	Actor->SetActorTickEnabled(true);
 	Actor->SetActorEnableCollision(true);
 	Actor->SetActorHiddenInGame(false);
 
-	if (UActorComponent* Movement = Actor->GetComponentByClass(UMovementComponent::StaticClass()))
+	TInlineComponentArray<UActorComponent*>Components;
+	Actor->GetComponents(Components);
+	for (UActorComponent* Component : Components)
 	{
-		Cast<UMovementComponent>(Movement)->StopMovementImmediately();
+		if (UParticleSystemComponent* ParticleSystem = Cast<UParticleSystemComponent>(Component))
+		{
+			ParticleSystem->SetActive(true, true);
+			ParticleSystem->ActivateSystem();
+
+			continue;
+		}
+
+		if (UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(Component))
+		{
+			Niagara->SetActive(true, true);
+			Niagara->ActivateSystem();
+			
+			continue;
+		}
+
+		if (UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(Component))
+		{
+			Primitive->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+			Primitive->SetPhysicsLinearVelocity(FVector::ZeroVector);
+			Primitive->SetComponentTickEnabled(true);
+			Primitive->SetVisibility(true, true);
+
+			Primitive->SetActive(true, true);
+
+			continue;
+		}
+
+		if (UMovementComponent* Movement = Cast<UMovementComponent>(Component))
+		{
+			Movement->SetUpdatedComponent(Actor->GetRootComponent());
+			Movement->SetActive(true, true);
+			Movement->StopMovementImmediately();
+		}
+
+		Component->SetActive(true, true);
 	}
 }
 
-void UFireflyObjectPoolLibrary::UniversalEndPlay_Actor(AActor* Actor)
+void UFireflyObjectPoolLibrary::UniversalEndPlay_Actor(const UObject* WorldContextObject, AActor* Actor)
 {
 	Actor->SetActorTickEnabled(false);
 	Actor->SetActorEnableCollision(false);
@@ -47,8 +85,6 @@ void UFireflyObjectPoolLibrary::UniversalEndPlay_Actor(AActor* Actor)
 			continue;
 		}
 
-		Component->SetActive(false);
-
 		if (UPrimitiveComponent* Primitive = Cast<UPrimitiveComponent>(Component))
 		{
 			Primitive->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
@@ -56,23 +92,42 @@ void UFireflyObjectPoolLibrary::UniversalEndPlay_Actor(AActor* Actor)
 			Primitive->SetComponentTickEnabled(false);
 			Primitive->SetSimulatePhysics(false);
 			Primitive->SetVisibility(false, true);
+			Component->SetActive(false);
+
+			continue;
 		}
 
 		if (UMovementComponent* Movement = Cast<UMovementComponent>(Component))
 		{
 			Movement->StopMovementImmediately();
+			Movement->SetUpdatedComponent(nullptr);
 		}
+
+		Component->SetActive(false);
 	}
 }
 
-void UFireflyObjectPoolLibrary::UniversalWarmUp_Actor(AActor* Actor)
+void UFireflyObjectPoolLibrary::UniversalWarmUp_Actor(const UObject* WorldContextObject, AActor* Actor)
 {
-	UniversalEndPlay_Actor(Actor);
+	UniversalEndPlay_Actor(WorldContextObject, Actor);
 }
 
-void UFireflyObjectPoolLibrary::UniversalBeginPlay_Pawn(APawn* Pawn)
+void UFireflyObjectPoolLibrary::UniversalBeginPlay_Projectile(const UObject* WorldContextObject, AActor* Projectile)
 {
-	UniversalBeginPlay_Actor(Pawn);
+	UniversalBeginPlay_Actor(WorldContextObject, Projectile);
+	UActorComponent* ComponentPM = Projectile->GetComponentByClass(UProjectileMovementComponent::StaticClass());
+	if (!IsValid(ComponentPM))
+	{
+		return;
+	}
+
+	UProjectileMovementComponent* ProjectileMovement = Cast<UProjectileMovementComponent>(ComponentPM);
+	ProjectileMovement->SetVelocityInLocalSpace(FVector::XAxisVector * ProjectileMovement->InitialSpeed);
+}
+
+void UFireflyObjectPoolLibrary::UniversalBeginPlay_Pawn(const UObject* WorldContextObject, APawn* Pawn)
+{
+	UniversalBeginPlay_Actor(WorldContextObject, Pawn);
 
 	Pawn->SpawnDefaultController();
 	if (IsValid(Pawn->GetController()))
@@ -87,9 +142,9 @@ void UFireflyObjectPoolLibrary::UniversalBeginPlay_Pawn(APawn* Pawn)
 	}
 }
 
-void UFireflyObjectPoolLibrary::UniversalEndPlay_Pawn(APawn* Pawn)
+void UFireflyObjectPoolLibrary::UniversalEndPlay_Pawn(const UObject* WorldContextObject, APawn* Pawn)
 {
-	UniversalEndPlay_Actor(Pawn);
+	UniversalEndPlay_Actor(WorldContextObject, Pawn);
 
 	if (IsValid(Pawn->GetController()))
 	{
@@ -103,9 +158,9 @@ void UFireflyObjectPoolLibrary::UniversalEndPlay_Pawn(APawn* Pawn)
 	}
 }
 
-void UFireflyObjectPoolLibrary::UniversalWarmUp_Pawn(APawn* Pawn)
+void UFireflyObjectPoolLibrary::UniversalWarmUp_Pawn(const UObject* WorldContextObject, APawn* Pawn)
 {
-	UniversalWarmUp_Actor(Pawn);
+	UniversalWarmUp_Actor(WorldContextObject, Pawn);
 
 	Pawn->SpawnDefaultController();
 	if (IsValid(Pawn->GetController()))
@@ -120,17 +175,17 @@ void UFireflyObjectPoolLibrary::UniversalWarmUp_Pawn(APawn* Pawn)
 	}
 }
 
-void UFireflyObjectPoolLibrary::UniversalBeginPlay_Character(ACharacter* Character)
+void UFireflyObjectPoolLibrary::UniversalBeginPlay_Character(const UObject* WorldContextObject, ACharacter* Character)
 {
-	UniversalBeginPlay_Pawn(Character);
+	UniversalBeginPlay_Pawn(WorldContextObject, Character);
 }
 
-void UFireflyObjectPoolLibrary::UniversalEndPlay_Character(ACharacter* Character)
+void UFireflyObjectPoolLibrary::UniversalEndPlay_Character(const UObject* WorldContextObject, ACharacter* Character)
 {
-	UniversalEndPlay_Pawn(Character);
+	UniversalEndPlay_Pawn(WorldContextObject, Character);
 }
 
-void UFireflyObjectPoolLibrary::UniversalWarmUp_Character(ACharacter* Character)
+void UFireflyObjectPoolLibrary::UniversalWarmUp_Character(const UObject* WorldContextObject, ACharacter* Character)
 {
-	UniversalWarmUp_Pawn(Character);
+	UniversalWarmUp_Pawn(WorldContextObject, Character);
 }
