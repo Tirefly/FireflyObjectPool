@@ -53,6 +53,10 @@ void UFireflyObjectPoolLibrary::UniversalBeginPlay_Actor(const UObject* WorldCon
 			Movement->SetUpdatedComponent(Actor->GetRootComponent());
 			Movement->SetActive(true, true);
 			Movement->StopMovementImmediately();
+			if (UProjectileMovementComponent* ProjectileMovement = Cast<UProjectileMovementComponent>(Movement))
+			{
+				ProjectileMovement->SetVelocityInLocalSpace(FVector::XAxisVector * ProjectileMovement->InitialSpeed);
+			}			
 		}
 
 		Component->SetActive(true, true);
@@ -110,19 +114,6 @@ void UFireflyObjectPoolLibrary::UniversalEndPlay_Actor(const UObject* WorldConte
 void UFireflyObjectPoolLibrary::UniversalWarmUp_Actor(const UObject* WorldContextObject, AActor* Actor)
 {
 	UniversalEndPlay_Actor(WorldContextObject, Actor);
-}
-
-void UFireflyObjectPoolLibrary::UniversalBeginPlay_Projectile(const UObject* WorldContextObject, AActor* Projectile)
-{
-	UniversalBeginPlay_Actor(WorldContextObject, Projectile);
-	UActorComponent* ComponentPM = Projectile->GetComponentByClass(UProjectileMovementComponent::StaticClass());
-	if (!IsValid(ComponentPM))
-	{
-		return;
-	}
-
-	UProjectileMovementComponent* ProjectileMovement = Cast<UProjectileMovementComponent>(ComponentPM);
-	ProjectileMovement->SetVelocityInLocalSpace(FVector::XAxisVector * ProjectileMovement->InitialSpeed);
 }
 
 void UFireflyObjectPoolLibrary::UniversalBeginPlay_Pawn(const UObject* WorldContextObject, APawn* Pawn)

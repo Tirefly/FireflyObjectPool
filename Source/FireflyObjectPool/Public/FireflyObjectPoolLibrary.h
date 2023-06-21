@@ -35,16 +35,6 @@ public:
 #pragma endregion
 
 
-#pragma region Projectile_Universal_Pool_Operation
-
-	// 拥有ProjectileMovementComponent的Actor通用的从对象池中取出后进行初始化的操作。
-	// Common operation for an Actor owning ProjectileMovementComponent to initialize after being taken out from the object pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (WorldContext = "WorldContextObject"))
-	static void UniversalBeginPlay_Projectile(const UObject* WorldContextObject, AActor* Projectile);
-
-#pragma endregion
-
-
 #pragma region Pawn_Universal_Pool_Operation
 
 	// Pawn通用的从对象池中取出后进行初始化的操作。
