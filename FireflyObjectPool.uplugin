@@ -20,6 +20,14 @@
 			"PlatformAllowList": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "FireflyObjectPoolDeveloper",
+			"Type": "UncookedOnly",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+			]
 		}
 	],
 	"Plugins": [

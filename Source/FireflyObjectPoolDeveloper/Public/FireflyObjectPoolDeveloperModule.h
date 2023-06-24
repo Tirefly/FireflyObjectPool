@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FFireflyObjectPoolModule : public IModuleInterface
+class FFireflyObjectPoolDeveloperModule : public IModuleInterface
 {
 public:
 

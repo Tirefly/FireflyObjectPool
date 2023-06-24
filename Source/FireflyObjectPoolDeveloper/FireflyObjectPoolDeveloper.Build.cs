@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class FireflyObjectPool : ModuleRules
+public class FireflyObjectPoolDeveloper : ModuleRules
 {
-	public FireflyObjectPool(ReadOnlyTargetRules Target) : base(Target)
+	public FireflyObjectPoolDeveloper(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         OptimizeCode = CodeOptimization.Never;
@@ -39,8 +39,9 @@ public class FireflyObjectPool : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"AIModule",
-                "Niagara",
+                "Projects",
+                "KismetCompiler",
+                "FireflyObjectPool"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
@@ -52,5 +53,18 @@ public class FireflyObjectPool : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
+
+
+        if (Target.bBuildEditor == true)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[] {
+                    "UnrealEd",
+                    "LevelEditor",
+                    "PropertyEditor",
+                    "BlueprintGraph"
+                }
+            );
+        }
 	}
 }

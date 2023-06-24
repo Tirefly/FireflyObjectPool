@@ -1,4 +1,4 @@
-// Copyright Firefly Games, 2023. All Rights Reserved.
+// Copyright tzlFirefly, 2023. All Rights Reserved.
 
 #pragma once
 

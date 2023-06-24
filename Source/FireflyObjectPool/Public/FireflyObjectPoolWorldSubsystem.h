@@ -1,4 +1,4 @@
-// Copyright Firefly Games, 2023. All Rights Reserved.
+// Copyright tzlFirefly, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -50,29 +50,16 @@ public:
 public:
 	// 从Actor池里提取一个特定类的Actor实例。
 	// Extract an actor instance of a specific class from the Actor pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actor By Class", DeterminesOutputType = "ActorClass"))
-	static AActor* K2_ActorPool_FetchActorByClass(TSubclassOf<AActor> ActorClass);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actor", DeterminesOutputType = "ActorClass"))
+	static AActor* K2_ActorPool_FetchActor(TSubclassOf<AActor> ActorClass, FName ActorID);
 
 	template<typename T>
-	static T* ActorPool_FetchActorByClass(TSubclassOf<T> ActorClass);
-
-	// 从Actor池里提取一个特定ID的Actor实例。
-	// Extract an actor instance of a specific ID from the Actor pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actor By ID", DeterminesOutputType = "ActorClass"))
-	static AActor* K2_ActorPool_FetchActorByID(FName ActorID, TSubclassOf<AActor> ActorClass);
-
-	template<typename T>
-	static T* ActorPool_FetchActorByID(FName ActorID);
+	static T* ActorPool_FetchActor(TSubclassOf<T> ActorClass, FName ActorID);
 
 	// 从Actor池里提取一个特定类的Actor实例集。
 	// Extract a collection of Actor instances of a specific class from the Actor pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DeterminesOutputType = "ActorClass"))
-	static TArray<AActor*> ActorPool_FetchActorSetByClass(TSubclassOf<AActor> ActorClass, int32 Count = 16);
-
-	// 从Actor池里提取一个特定ID的Actor实例集。
-	// Extract a collection of Actor instances of a specific ID from the Actor pool.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DeterminesOutputType = "ActorClass"))
-	static TArray<AActor*> ActorPool_FetchActorSetByID(FName ActorID, TSubclassOf<AActor> ActorClass, int32 Count = 16);
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actors", DeterminesOutputType = "ActorClass"))
+	static TArray<AActor*> ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID, int32 Count = 16);
 
 #pragma endregion
 
@@ -80,26 +67,24 @@ public:
 #pragma region ActorPool_Spawn
 
 public:
-	// 从Actor池里生成一个Actor，或者根据ID，或者根据Actor类。
-	// Spawn an Actor from the Actor pool, either based on ID or based on Actor class.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Spawn Actor"
-		, WorldContext = "WorldContextObject", DeterminesOutputType = "ActorClass", AdvancedDisplay = "5"))
-	static AActor* K2_ActorPool_SpawnActor(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID
-		, const FTransform& Transform, AActor* Owner = nullptr, APawn* Instigator = nullptr
-		, const ESpawnActorCollisionHandlingMethod CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	// 从Actor池里生成一个Actor，或者根据ID，或者根据Actor类。并且会在给定时间后，将该Actor回收到Actor池中。
-	// Spawn an Actor from the Actor pool, either based on ID or based on Actor class. Additionally, the Actor will be recycled back into the Actor pool after a given time.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Spawn Actor With Lifetime"
-		, WorldContext = "WorldContextObject", DeterminesOutputType = "ActorClass", AdvancedDisplay = "6"))
-	static AActor* K2_ActorPool_SpawnActorWithLifetime(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID
-		, const FTransform& Transform, float Lifetime, AActor* Owner = nullptr, APawn* Instigator = nullptr
-		, const ESpawnActorCollisionHandlingMethod CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	// 从ActorPool生成执行指定Actor类的实例，但不会自动运行其构造脚本及其ActorPool初始化。
+	// Spawns an instance of the specified actor class from ActorPool, but does not automatically run its construction script and its ActorPool initialization.
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContext"
+		, UnsafeDuringActorConstruction = "true", BlueprintInternalUseOnly = "true"))
+	static AActor* ActorPool_BeginDeferredActorSpawn(const UObject* WorldContext
+		, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& SpawnTransform, AActor* Owner = nullptr
+		, ESpawnActorCollisionHandlingMethod CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	// 完成从ActorPool生成一个Actor实例，并且会执行Actor的构造脚本和ActorPool初始化。
+	// 'Finish' spawning an actor from ActorPool.  This will run the construction script and the ActorPool initialization.
+	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContext"
+		, UnsafeDuringActorConstruction = "true", BlueprintInternalUseOnly = "true"))
+	static AActor* ActorPool_FinishSpawningActor(const UObject* WorldContext, AActor* Actor, const FTransform& SpawnTransform, float Lifetime);
 
 	template<typename T>
-	static T* ActorPool_SpawnActor(const UObject* WorldContextObject, TSubclassOf<T> ActorClass, FName ActorID
-		, const FTransform& Transform, AActor* Owner, APawn* Instigator
-		, const ESpawnActorCollisionHandlingMethod CollisionHandling);
+	T* ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID, const FTransform& Transform, float Lifetime
+		, AActor* Owner, const ESpawnActorCollisionHandlingMethod CollisionHandling);
 
 #pragma endregion
 
@@ -118,16 +103,11 @@ public:
 #pragma region ActorPool_WarmUp
 
 public:
-	// 生成特定数量的指定类的Actor并放进Actor池中待命。
-	// Spawn a specific number of Actors of a specified class and place them in the Actor pool on standby.
+	// 生成特定数量的指定类以及指定ID的Actor并放进Actor池中待命。
+	// Spawn a specific number of Actors of a specified class and a specified ID ,and place them in the Actor pool on standby.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContextObject"))
-	static void ActorPool_WarmUpActorByClass(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, const FTransform& Transform, int32 Count = 16);
-
-	// 生成特定数量的指定ID的Actor并放进Actor池中待命。
-	// Pre-generate a specific number of Actors of a specified ID and place them in the Actor pool on standby.
-	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContextObject"))
-	static void ActorPool_WarmUpActorByID(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count = 16);
-
+	static void ActorPool_WarmUp(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count = 16);
+	
 #pragma endregion
 
 
@@ -170,23 +150,9 @@ protected:
 };
 
 template <typename T>
-T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActorByClass(TSubclassOf<T> ActorClass)
+T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActor(TSubclassOf<T> ActorClass, FName ActorID)
 {
-	TActorPoolList* Pool = ActorPoolOfClass.Find(ActorClass);
-	if (Pool && Pool->Num() > 0)
-	{
-		T* Actor = Pool->Pop(false);
-
-		return Actor;
-	}
-
-	return nullptr;
-}
-
-template <typename T>
-T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActorByID(FName ActorID)
-{
-	TActorPoolList* Pool = ActorPoolOfID.Find(ActorID);
+	TActorPoolList* Pool = ActorID != NAME_None ? ActorPoolOfID.Find(ActorID) : ActorPoolOfClass.Find(ActorClass);
 	if (Pool && Pool->Num() > 0)
 	{
 		T* Actor = Pool->Pop(false);
@@ -198,51 +164,51 @@ T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActorByID(FName ActorID)
 }
 
 template<typename T>
-T* UFireflyObjectPoolWorldSubsystem::ActorPool_SpawnActor(const UObject* WorldContextObject,
-	TSubclassOf<T> ActorClass, FName ActorID, const FTransform& Transform, AActor* Owner, APawn* Instigator,
-	const ESpawnActorCollisionHandlingMethod CollisionHandling)
+T* UFireflyObjectPoolWorldSubsystem::ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID
+	, const FTransform& Transform, float Lifetime, AActor* Owner	
+	, const ESpawnActorCollisionHandlingMethod CollisionHandling)
 {
-	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	UWorld* World = GetWorld();
 	if (!IsValid(World) || (!IsValid(ActorClass) && ActorID == NAME_None))
 	{
 		return nullptr;
 	}
 
-	T* Actor = ActorPool_FetchActorByID<T>(ActorID);
-	if (!IsValid(Actor))
-	{
-		Actor = ActorPool_FetchActorByClass<T>(ActorClass);
-	}
-
+	T* Actor = ActorPool_FetchActor<T>(ActorClass, ActorID);
 	if (Actor)
 	{
 		Actor->SetActorTransform(Transform, true, nullptr, ETeleportType::ResetPhysics);
 		Actor->SetOwner(Owner);
-		Actor->SetInstigator(Instigator);
 
 		if (Actor->Implements<UFireflyPoolingActorInterface>())
 		{
 			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
 		}
+	}
+	else
+	{
+		if (!IsValid(ActorClass))
+		{
+			return nullptr;
+		}
 
-		return Actor;
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = Owner;
+		SpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
+
+		Actor = World->SpawnActor<T>(ActorClass, Transform, SpawnParameters);
+		if (Actor->Implements<UFireflyPoolingActorInterface>())
+		{
+			IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
+			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
+		}
 	}
 
-	if (!IsValid(ActorClass))
+	if (IsValid(Actor) && Lifetime > 0.f)
 	{
-		return nullptr;
-	}
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = Owner;
-	SpawnParameters.Instigator = Instigator;
-	SpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
-
-	Actor = World->SpawnActor<T>(ActorClass, Transform, SpawnParameters);
-	if (Actor->Implements<UFireflyPoolingActorInterface>())
-	{
-		IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
-		IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
+		FTimerHandle TimerHandle;
+		auto TimerLambda = [Actor]() { ActorPool_ReleaseActor(Actor); };
+		World->GetTimerManager().SetTimer(TimerHandle, TimerLambda, Lifetime, false);
 	}
 
 	return Actor;
