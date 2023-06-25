@@ -59,7 +59,10 @@ public:
 	// 从Actor池里提取一个特定类的Actor实例集。
 	// Extract a collection of Actor instances of a specific class from the Actor pool.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actors", DeterminesOutputType = "ActorClass"))
-	static TArray<AActor*> ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID, int32 Count = 16);
+	static TArray<AActor*> K2_ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID, int32 Count = 16);
+
+	template<typename T>
+	static TArray<T*> ActorPool_FetchActors(TSubclassOf<T> ActorClass, FName ActorID, int32 Count = 16);
 
 #pragma endregion
 
@@ -67,7 +70,6 @@ public:
 #pragma region ActorPool_Spawn
 
 public:
-
 	// 从ActorPool生成执行指定Actor类的实例，但不会自动运行其构造脚本及其ActorPool初始化。
 	// Spawns an instance of the specified actor class from ActorPool, but does not automatically run its construction script and its ActorPool initialization.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContext"
@@ -161,6 +163,22 @@ T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActor(TSubclassOf<T> ActorCl
 	}
 
 	return nullptr;
+}
+
+template <typename T>
+TArray<T*> UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActors(TSubclassOf<T> ActorClass, FName ActorID,
+	int32 Count)
+{
+	TArray<T*> ActorCollection;
+	for (int32 i = 0; i < Count; ++i)
+	{
+		if (T* Actor = ActorPool_FetchActor<T>(ActorClass, ActorID))
+		{
+			ActorCollection.Add(Actor);
+		}
+	}
+
+	return ActorCollection;
 }
 
 template<typename T>

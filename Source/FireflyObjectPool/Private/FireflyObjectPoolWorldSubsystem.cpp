@@ -86,17 +86,10 @@ AActor* UFireflyObjectPoolWorldSubsystem::K2_ActorPool_FetchActor(TSubclassOf<AA
 	return ActorPool_FetchActor<AActor>(ActorClass, ActorID);
 }
 
-TArray<AActor*> UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID,
+TArray<AActor*> UFireflyObjectPoolWorldSubsystem::K2_ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID,
 	int32 Count)
 {
-	TArray<AActor*> ActorCollection;
-
-	for (int32 i = 0; i < Count; ++i)
-	{
-		ActorCollection.Add(ActorPool_FetchActor<AActor>(ActorClass, ActorID));
-	}
-
-	return ActorCollection;
+	return ActorPool_FetchActors<AActor>(ActorClass, ActorID, Count);
 }
 
 AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(const UObject* WorldContext, TSubclassOf<AActor> ActorClass
