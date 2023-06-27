@@ -151,6 +151,8 @@ protected:
 #pragma endregion
 };
 
+#pragma region ActorPool_FunctionTemplate
+
 template <typename T>
 T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActor(TSubclassOf<T> ActorClass, FName ActorID)
 {
@@ -231,3 +233,5 @@ T* UFireflyObjectPoolWorldSubsystem::ActorPool_SpawnActor(TSubclassOf<T> ActorCl
 
 	return Actor;
 }
+
+#pragma endregion
