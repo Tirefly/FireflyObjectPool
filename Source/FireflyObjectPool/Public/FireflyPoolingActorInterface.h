@@ -48,5 +48,5 @@ public:
 	// Set the ID of the Actor.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "FireflyObjectPool")
 	void PoolingSetActorID(FName NewActorID);
-	virtual void PoolingSetActorID_Implementation(FName NewActorID) {}
+	virtual void PoolingSetActorID_Implementation(FName NewActorID) {}	
 };
