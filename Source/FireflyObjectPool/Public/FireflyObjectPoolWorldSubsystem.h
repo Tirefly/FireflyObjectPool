@@ -219,7 +219,10 @@ T* UFireflyObjectPoolWorldSubsystem::ActorPool_SpawnActor(TSubclassOf<T> ActorCl
 		Actor = World->SpawnActor<T>(ActorClass, Transform, SpawnParameters);
 		if (Actor->Implements<UFireflyPoolingActorInterface>())
 		{
-			IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
+			if (ActorID != NAME_None)
+			{
+				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
+			}
 			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
 		}
 	}
