@@ -56,7 +56,7 @@ void UFireflyObjectPoolLibrary::UniversalBeginPlay_Actor(const UObject* WorldCon
 			if (UProjectileMovementComponent* ProjectileMovement = Cast<UProjectileMovementComponent>(Movement))
 			{
 				ProjectileMovement->SetVelocityInLocalSpace(FVector::XAxisVector * ProjectileMovement->InitialSpeed);
-			}			
+			}
 		}
 
 		Component->SetActive(true, true);
@@ -128,7 +128,7 @@ void UFireflyObjectPoolLibrary::UniversalBeginPlay_Pawn(const UObject* WorldCont
 			if (UBrainComponent* Brain = AIController->GetBrainComponent())
 			{
 				Brain->StartLogic();
-			}			
+			}
 		}
 	}
 }

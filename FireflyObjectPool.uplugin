@@ -8,7 +8,7 @@
 	"CreatedBy": "tzlFirefly",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/6a02b0de984f42989c6b8571c65ca158",
 	"SupportURL": "",
-	"DocsURL": "",
+	"DocsURL": "https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/EnglishDocumentation.md",
 	"EngineVersion": "5.1.0",
 	"CanContainContent": true,
 	"Installed": true,
@@ -18,8 +18,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
 			"PlatformAllowList": [
-				"Win32",
-				"Win64"
+				"Win64",
+				"Mac"
 			]
 		},
 		{
@@ -27,8 +27,8 @@
 			"Type": "UncookedOnly",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
-				"Win32",
-				"Win64"
+				"Win64",
+				"Mac"
 			]
 		}
 	],

@@ -93,7 +93,7 @@ TArray<AActor*> UFireflyObjectPoolWorldSubsystem::K2_ActorPool_FetchActors(TSubc
 }
 
 AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(const UObject* WorldContext, TSubclassOf<AActor> ActorClass
-                                                                            , FName ActorID, const FTransform& SpawnTransform, AActor* Owner, ESpawnActorCollisionHandlingMethod CollisionHandling)
+	, FName ActorID, const FTransform& SpawnTransform, AActor* Owner, ESpawnActorCollisionHandlingMethod CollisionHandling)
 {
 	UWorld* World = WorldContext->GetWorld();
 	if (!IsValid(World) || (!IsValid(ActorClass) && ActorID == NAME_None))
@@ -179,8 +179,8 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_ReleaseActor(AActor* Actor)
 	Pool.Push(Actor);	
 }
 
-void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldContextObject,
-	TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count)
+void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldContextObject
+	, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 
