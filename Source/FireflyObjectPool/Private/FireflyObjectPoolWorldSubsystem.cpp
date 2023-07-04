@@ -2,6 +2,7 @@
 
 #include "FireflyObjectPoolWorldSubsystem.h"
 
+#include "Engine/World.h"
 #include "TimerManager.h"
 
 
@@ -182,7 +183,7 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_ReleaseActor(AActor* Actor)
 void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldContextObject
 	, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count)
 {
-	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	UWorld* World = WorldContextObject->GetWorld();
 
 	if (!IsValid(World) || !IsValid(ActorClass) || ActorID == NAME_None || Count <= 0)
 	{
