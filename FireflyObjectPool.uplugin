@@ -18,8 +18,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
 			"PlatformAllowList": [
-				"Win64",
-				"Mac"
+				"Win64"
 			]
 		},
 		{
@@ -27,8 +26,7 @@
 			"Type": "UncookedOnly",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
-				"Win64",
-				"Mac"
+				"Win64"
 			]
 		}
 	],
