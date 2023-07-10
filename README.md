@@ -6,7 +6,8 @@ A user-friendly, blueprint and C++ compatible, data-driven, non-intrusive object
 
 A user-friendly, blueprint and C++ compatible, data-driven, non-intrusive object pool plugin. This plugin is designed to help you recycle actors such as bullets, magic effects, and pawns running AI logic like minions in your game.
 
-Documentation: [中文](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md) / [English](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/EnglishDocumentation.md)
++ Quick Start Vidoe: [Bilibili](https://www.bilibili.com/video/BV18j411Z7D4/) / [YouTube](https://youtu.be/H3eJD_DSOCg)
++ Documentation: [中文](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md) / [English](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/EnglishDocumentation.md)
 
 简单易用的，蓝图和C++兼容的，支持数据驱动的，非侵入式程序设计的对象池插件。该插件能够帮助你在游戏中循环利用如子弹、魔法领域等Actor，以及喽啰小兵等运行AI逻辑的Pawn。
 
@@ -43,6 +44,6 @@ Code Modules:
 Number of Blueprints: 0
 Number of C++ Classes: 6
 Network Replicated: No
-Supported Development Platforms: Win64, Mac
-Supported Target Build Platforms: Win64, Mac
+Supported Development Platforms: Win64
+Supported Target Build Platforms: Win64
 Documentation: [中文](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3.md) / [English](https://github.com/tzlFirefly/FireflyPlugins_UE5/blob/main/UEP001_FireflyObjectPool/EnglishDocumentation.md)
