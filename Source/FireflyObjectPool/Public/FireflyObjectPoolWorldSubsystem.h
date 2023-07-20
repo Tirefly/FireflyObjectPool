@@ -48,16 +48,16 @@ public:
 #pragma region ActorPool_Fetch
 
 public:
-	// 从Actor池里提取一个特定类的Actor实例。
-	// Extract an actor instance of a specific class from the Actor pool.
+	// 从Actor池里提取一个特定类的Actor实例。请确保要使用的对象池存在，且对象池中确实有可使用的Actor实例。
+	// Extract an actor instance of a specific class from the Actor pool. Make sure that the object pool you want to use exists and that there are Actor instances available in the object pool.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actor", DeterminesOutputType = "ActorClass"))
 	static AActor* K2_ActorPool_FetchActor(TSubclassOf<AActor> ActorClass, FName ActorID);
 
 	template<typename T>
 	static T* ActorPool_FetchActor(TSubclassOf<T> ActorClass, FName ActorID);
 
-	// 从Actor池里提取一个特定类的Actor实例集。
-	// Extract a collection of Actor instances of a specific class from the Actor pool.
+	// 从Actor池里提取一个特定类的Actor实例集。请确保要使用的对象池存在，且对象池中确实有可使用的Actor实例。
+	// Extract a collection of Actor instances of a specific class from the Actor pool. Make sure that the object pool you want to use exists and that there are Actor instances available in the object pool.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", Meta = (DisplayName = "Actor Pool Fetch Actors", DeterminesOutputType = "ActorClass"))
 	static TArray<AActor*> K2_ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID, int32 Count = 16);
 
