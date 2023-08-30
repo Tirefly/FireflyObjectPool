@@ -152,18 +152,6 @@ void UFireflyObjectPoolLibrary::UniversalEndPlay_Pawn(const UObject* WorldContex
 void UFireflyObjectPoolLibrary::UniversalWarmUp_Pawn(const UObject* WorldContextObject, APawn* Pawn)
 {
 	UniversalWarmUp_Actor(WorldContextObject, Pawn);
-
-	Pawn->SpawnDefaultController();
-	if (IsValid(Pawn->GetController()))
-	{
-		if (const AAIController* AIController = Cast<AAIController>(Pawn->GetController()))
-		{
-			if (UBrainComponent* Brain = AIController->GetBrainComponent())
-			{
-				Brain->Cleanup();
-			}
-		}
-	}
 }
 
 void UFireflyObjectPoolLibrary::UniversalBeginPlay_Character(const UObject* WorldContextObject, ACharacter* Character)
