@@ -156,7 +156,12 @@ protected:
 template <typename T>
 T* UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActor(TSubclassOf<T> ActorClass, FName ActorID)
 {
-	TActorPoolList* Pool = ActorID != NAME_None ? ActorPoolOfID.Find(ActorID) : ActorPoolOfClass.Find(ActorClass);
+	TActorPoolList* Pool = ActorPoolOfID.Find(ActorID);
+	if (!Pool)
+	{
+		Pool = ActorPoolOfClass.Find(ActorClass);
+	}
+
 	if (Pool && Pool->Num() > 0)
 	{
 		T* Actor = Pool->Pop(false);

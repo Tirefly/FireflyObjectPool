@@ -102,9 +102,21 @@ AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(cons
 		return nullptr;
 	}
 
+	auto SetActorID = [ActorID](AActor* InActor)
+	{
+		if (InActor->Implements<UFireflyPoolingActorInterface>())
+		{
+			if (IFireflyPoolingActorInterface::Execute_PoolingGetActorID(InActor) == NAME_None)
+			{
+				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(InActor, ActorID);
+			}
+		}
+	};
+
 	AActor* Actor = ActorPool_FetchActor<AActor>(ActorClass, ActorID);
 	if (Actor)
 	{
+		SetActorID(Actor);
 		Actor->SetActorTransform(SpawnTransform, true, nullptr, ETeleportType::ResetPhysics);
 		Actor->SetOwner(Owner);
 
@@ -117,10 +129,7 @@ AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(cons
 	}
 
 	Actor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, nullptr, CollisionHandling);
-	if (Actor->Implements<UFireflyPoolingActorInterface>() && ActorID != NAME_None)
-	{
-		IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
-	}
+	SetActorID(Actor);
 
 	return Actor;
 }
