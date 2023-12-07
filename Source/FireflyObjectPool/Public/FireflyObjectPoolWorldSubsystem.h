@@ -69,6 +69,10 @@ public:
 
 #pragma region ActorPool_Spawn
 
+protected:
+	AActor* SpawnActor_Internal(TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, float Lifetime
+		, AActor* Owner, APawn* Instigator, const ESpawnActorCollisionHandlingMethod CollisionHandling);
+
 public:
 	// 从ActorPool生成执行指定Actor类的实例，但不会自动运行其构造脚本及其ActorPool初始化。
 	// Spawns an instance of the specified actor class from ActorPool, but does not automatically run its construction script and its ActorPool initialization.
@@ -86,7 +90,7 @@ public:
 
 	template<typename T>
 	T* ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID, const FTransform& Transform, float Lifetime
-		, AActor* Owner, const ESpawnActorCollisionHandlingMethod CollisionHandling);
+		, AActor* Owner, APawn* Instigator, const ESpawnActorCollisionHandlingMethod CollisionHandling);
 
 #pragma endregion
 
@@ -190,56 +194,10 @@ TArray<T*> UFireflyObjectPoolWorldSubsystem::ActorPool_FetchActors(TSubclassOf<T
 
 template<typename T>
 T* UFireflyObjectPoolWorldSubsystem::ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID
-	, const FTransform& Transform, float Lifetime, AActor* Owner	
+	, const FTransform& Transform, float Lifetime, AActor* Owner, APawn* Instigator
 	, const ESpawnActorCollisionHandlingMethod CollisionHandling)
 {
-	UWorld* World = GetWorld();
-	if (!IsValid(World) || (!IsValid(ActorClass) && ActorID == NAME_None))
-	{
-		return nullptr;
-	}
-
-	T* Actor = ActorPool_FetchActor<T>(ActorClass, ActorID);
-	if (Actor)
-	{
-		Actor->SetActorTransform(Transform, true, nullptr, ETeleportType::ResetPhysics);
-		Actor->SetOwner(Owner);
-
-		if (Actor->Implements<UFireflyPoolingActorInterface>())
-		{
-			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
-		}
-	}
-	else
-	{
-		if (!IsValid(ActorClass))
-		{
-			return nullptr;
-		}
-
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.Owner = Owner;
-		SpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
-
-		Actor = World->SpawnActor<T>(ActorClass, Transform, SpawnParameters);
-		if (Actor->Implements<UFireflyPoolingActorInterface>())
-		{
-			if (ActorID != NAME_None)
-			{
-				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
-			}
-			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
-		}
-	}
-
-	if (IsValid(Actor) && Lifetime > 0.f)
-	{
-		FTimerHandle TimerHandle;
-		auto TimerLambda = [Actor]() { ActorPool_ReleaseActor(Actor); };
-		World->GetTimerManager().SetTimer(TimerHandle, TimerLambda, Lifetime, false);
-	}
-
-	return Actor;
+	return Cast<T>(SpawnActor_Internal(ActorClass, ActorID, Transform, Lifetime, Owner, Instigator, CollisionHandling));
 }
 
 #pragma endregion

@@ -88,9 +88,63 @@ AActor* UFireflyObjectPoolWorldSubsystem::K2_ActorPool_FetchActor(TSubclassOf<AA
 }
 
 TArray<AActor*> UFireflyObjectPoolWorldSubsystem::K2_ActorPool_FetchActors(TSubclassOf<AActor> ActorClass, FName ActorID,
-	int32 Count)
+                                                                           int32 Count)
 {
 	return ActorPool_FetchActors<AActor>(ActorClass, ActorID, Count);
+}
+
+AActor* UFireflyObjectPoolWorldSubsystem::SpawnActor_Internal(TSubclassOf<AActor> ActorClass, FName ActorID,
+	const FTransform& Transform, float Lifetime, AActor* Owner, APawn* Instigator,
+	const ESpawnActorCollisionHandlingMethod CollisionHandling)
+{
+	UWorld* World = GetWorld();
+	if (!IsValid(World) || (!IsValid(ActorClass) && ActorID == NAME_None))
+	{
+		return nullptr;
+	}
+
+	AActor* Actor = ActorPool_FetchActor<AActor>(ActorClass, ActorID);
+	if (Actor)
+	{
+		Actor->SetActorTransform(Transform, true, nullptr, ETeleportType::ResetPhysics);
+		Actor->SetOwner(Owner);
+
+		if (Actor->template Implements<UFireflyPoolingActorInterface>())
+		{
+			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
+		}
+	}
+	else
+	{
+		if (!IsValid(ActorClass))
+		{
+			return nullptr;
+		}
+
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = Owner;
+		SpawnParameters.Instigator = Instigator;
+		SpawnParameters.SpawnCollisionHandlingOverride = CollisionHandling;
+
+		Actor = World->SpawnActor<AActor>(ActorClass, Transform, SpawnParameters);
+		if (Actor->template Implements<UFireflyPoolingActorInterface>())
+		{
+			if (ActorID != NAME_None)
+			{
+				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
+			}
+			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
+		}
+	}
+
+	if (IsValid(Actor) && Lifetime > 0.f)
+	{
+		FTimerHandle TimerHandle;
+		auto TimerLambda = [Actor]() { ActorPool_ReleaseActor(Actor); };
+		World->GetTimerManager().SetTimer(TimerHandle, TimerLambda, Lifetime, false);
+	}
+
+	return Actor;
 }
 
 AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(const UObject* WorldContext, TSubclassOf<AActor> ActorClass
@@ -128,7 +182,9 @@ AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(cons
 		return nullptr;
 	}
 
-	Actor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, nullptr, CollisionHandling);
+	UObject* MutableWorldContext = const_cast<UObject*>(WorldContext);
+	APawn* AutoInstigator = Cast<APawn>(MutableWorldContext);
+	Actor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, AutoInstigator, CollisionHandling);
 	SetActorID(Actor);
 
 	return Actor;
@@ -153,7 +209,7 @@ AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_FinishSpawningActor(const UO
 		IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
 	}
 
-	if (IsValid(Actor) && Lifetime > 0.f)
+	if (Lifetime > 0.f)
 	{
 		FTimerHandle TimerHandle;
 		auto TimerLambda = [Actor]() { ActorPool_ReleaseActor(Actor); };
