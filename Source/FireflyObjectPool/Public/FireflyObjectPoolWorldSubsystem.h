@@ -70,8 +70,9 @@ public:
 #pragma region ActorPool_Spawn
 
 protected:
-	AActor* SpawnActor_Internal(TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, float Lifetime
-		, AActor* Owner, APawn* Instigator, const ESpawnActorCollisionHandlingMethod CollisionHandling);
+	AActor* SpawnActor_Internal(TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform
+		, float Lifetime = -1.f, AActor* Owner = nullptr, APawn* Instigator = nullptr
+		, const ESpawnActorCollisionHandlingMethod CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 public:
 	// 从ActorPool生成执行指定Actor类的实例，但不会自动运行其构造脚本及其ActorPool初始化。
@@ -89,8 +90,9 @@ public:
 	static AActor* ActorPool_FinishSpawningActor(const UObject* WorldContext, AActor* Actor, const FTransform& SpawnTransform, float Lifetime);
 
 	template<typename T>
-	T* ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID, const FTransform& Transform, float Lifetime
-		, AActor* Owner, APawn* Instigator, const ESpawnActorCollisionHandlingMethod CollisionHandling);
+	T* ActorPool_SpawnActor(TSubclassOf<T> ActorClass, FName ActorID, const FTransform& Transform
+		, float Lifetime = -1.f, AActor* Owner = nullptr, APawn* Instigator = nullptr
+		, const ESpawnActorCollisionHandlingMethod CollisionHandling = ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 #pragma endregion
 
@@ -112,7 +114,8 @@ public:
 	// 生成特定数量的指定类以及指定ID的Actor并放进Actor池中待命。
 	// Spawn a specific number of Actors of a specified class and a specified ID ,and place them in the Actor pool on standby.
 	UFUNCTION(BlueprintCallable, Category = "FireflyObjectPool", meta = (WorldContext = "WorldContextObject"))
-	static void ActorPool_WarmUp(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count = 16);
+	static void ActorPool_WarmUp(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass, FName ActorID
+		, const FTransform& Transform, AActor* Owner = nullptr, APawn* Instigator = nullptr, int32 Count = 16);
 	
 #pragma endregion
 

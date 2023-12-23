@@ -111,6 +111,10 @@ AActor* UFireflyObjectPoolWorldSubsystem::SpawnActor_Internal(TSubclassOf<AActor
 
 		if (Actor->template Implements<UFireflyPoolingActorInterface>())
 		{
+			if (IFireflyPoolingActorInterface::Execute_PoolingGetActorID(Actor) != ActorID && ActorID != NAME_None)
+			{
+				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
+			}
 			IFireflyPoolingActorInterface::Execute_PoolingBeginPlay(Actor);
 		}
 	}
@@ -160,7 +164,7 @@ AActor* UFireflyObjectPoolWorldSubsystem::ActorPool_BeginDeferredActorSpawn(cons
 	{
 		if (InActor->Implements<UFireflyPoolingActorInterface>())
 		{
-			if (IFireflyPoolingActorInterface::Execute_PoolingGetActorID(InActor) == NAME_None)
+			if (IFireflyPoolingActorInterface::Execute_PoolingGetActorID(InActor) != ActorID && ActorID != NAME_None)
 			{
 				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(InActor, ActorID);
 			}
@@ -245,8 +249,9 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_ReleaseActor(AActor* Actor)
 	Pool.Push(Actor);	
 }
 
-void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldContextObject
-	, TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, int32 Count)
+void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldContextObject,
+	TSubclassOf<AActor> ActorClass, FName ActorID, const FTransform& Transform, AActor* Owner, APawn* Instigator,
+	int32 Count)
 {
 	UWorld* World = WorldContextObject->GetWorld();
 
@@ -256,8 +261,8 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldCont
 	}
 
 	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = nullptr;
-	SpawnParameters.Instigator = nullptr;
+	SpawnParameters.Owner = Owner;
+	SpawnParameters.Instigator = Instigator;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	TActorPoolList& Pool = ActorID != NAME_None ? ActorPoolOfID.FindOrAdd(ActorID) : ActorPoolOfClass.FindOrAdd(ActorClass);
@@ -267,11 +272,11 @@ void UFireflyObjectPoolWorldSubsystem::ActorPool_WarmUp(const UObject* WorldCont
 		AActor* Actor = World->SpawnActor<AActor>(ActorClass, Transform, SpawnParameters);
 		if (Actor->Implements<UFireflyPoolingActorInterface>())
 		{
-			IFireflyPoolingActorInterface::Execute_PoolingWarmUp(Actor);
 			if (ActorID != NAME_None)
 			{
 				IFireflyPoolingActorInterface::Execute_PoolingSetActorID(Actor, ActorID);
 			}
+			IFireflyPoolingActorInterface::Execute_PoolingWarmUp(Actor);
 		}
 
 		Pool.Push(Actor);
